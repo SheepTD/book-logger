@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function Statistics() {
+export default function Settings() {
   return (
     <View style={styles.container}>
-      <Text>Booklist</Text>
+      <Text>Settings</Text>
     </View>
   );
 }
