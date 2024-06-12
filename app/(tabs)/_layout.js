@@ -1,22 +1,13 @@
-import { View, Text } from "react-native";
-import React from "react";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen
-        name="index"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="details"
-        options={{
-          headerShown: false,
-        }}
-      />
+    <Tabs screenOptions={{ headerShown: false }}>
+      <Tabs.Screen name="home" />
+      <Tabs.Screen name="friends" />
+      <Tabs.Screen name="booklist" />
+      <Tabs.Screen name="statistics" />
+      <Tabs.Screen name="settings" />
     </Tabs>
   );
 }

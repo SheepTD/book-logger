@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function DetailsScreen() {
+export default function Friends() {
   return (
     <View style={styles.container}>
-      <Text>Details</Text>
+      <Text>Friends</Text>
     </View>
   );
 }

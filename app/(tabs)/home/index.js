@@ -1,11 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
-import { Link } from "expo-router";
 
-export default function HomeScreen() {
+export default function Home() {
   return (
     <View style={styles.container}>
       <Text>Home</Text>
-      <Link href="/details">Veiw Details</Link>
     </View>
   );
 }
