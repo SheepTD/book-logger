@@ -37,7 +37,7 @@ import Auth from "../components/Auth";
 import Account from "../components/Account";
 import { View } from "react-native";
 
-export default function App() {
+export default function InitialSetup() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {

@@ -31,10 +31,10 @@ export default function Auth() {
 
     // use edge function to log in
     const { data, error } = await supabase.functions.invoke("login", {
-      body: {
+      body: JSON.stringify({
         identifier: username,
         password: password,
-      },
+      }),
     });
 
     if (error) Alert.alert(error.message);
@@ -76,8 +76,8 @@ export default function Auth() {
     if (error) Alert.alert(error.message);
     if (!session)
       Alert.alert(
-        "Code run successfully but session not returned. Try restarting the app and trying again"
-      ); // potentially change this error message
+        "Code run successfully but session not returned. Try restarting the app and trying again" // potentially change this error message
+      );
     setLoading(false);
   }
 
