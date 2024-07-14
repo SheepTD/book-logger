@@ -8,6 +8,10 @@ import { Alert, StyleSheet, View, AppState } from "react-native";
 import { supabase } from "../utils/supabase";
 import { Button, Input } from "@rneui/themed";
 
+// hCaptcha data
+const siteKey = "88645a4a-ab88-4636-bd88-45b2ed7606d2";
+const baseUrl = "https://hcaptcha.com";
+
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
 // `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
