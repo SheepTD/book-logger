@@ -3,14 +3,11 @@
 // has been updated to use "log in" not "sign in", have a username option and use the Deno edge function for login
 // needs to be updated to include username option and to not use email verification
 
-import React, { useState } from "react";
-import { Alert, StyleSheet, View, AppState } from "react-native";
+import React, { useRef, useState } from "react";
+import { Alert, StyleSheet, View, AppState, Platform } from "react-native";
 import { supabase } from "../utils/supabase";
 import { Button, Input } from "@rneui/themed";
-
-// hCaptcha data
-const siteKey = "88645a4a-ab88-4636-bd88-45b2ed7606d2";
-const baseUrl = "https://hcaptcha.com";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -29,6 +26,11 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
+  // hcaptcha state
+  const [captchaToken, setCaptchaToken] = useState();
+
+  // reference for resetting hcaptcha
+  const captcha = useRef();
 
   async function logInWithEmail() {
     setLoading(true);
@@ -74,8 +76,13 @@ export default function Auth() {
         data: {
           username: username,
         },
+        // hcaptcha data
+        captchaToken,
       },
     });
+
+    // reset the hcaptcha
+    captcha.current.resetCaptcha();
 
     if (error) Alert.alert(error.message);
     if (!session)
@@ -116,6 +123,15 @@ export default function Auth() {
           autoCapitalize={"none"}
         />
       </View>
+      {Platform.OS === "web" ? (
+        <HCaptcha
+          ref={captcha}
+          sitekey="88645a4a-ab88-4636-bd88-45b2ed7606d2"
+          onVerify={(token) => {
+            setCaptchaToken(token);
+          }}
+        />
+      ) : null}
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
           title="Log in"
