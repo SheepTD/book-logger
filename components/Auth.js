@@ -162,7 +162,7 @@ export default function Auth() {
             ref={captchaRef}
             siteKey={siteKey}
             baseUrl={baseUrl}
-            languageCode="en"
+            languageCode="en" // find a way to change this depending on user's language settings
             onMessage={onMessage}
           />
           <Button
