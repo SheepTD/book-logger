@@ -8,6 +8,8 @@ const ColorPalette = {
   link: "purple",
   red: "red",
   green: "green",
+  tabBar: "orange",
+  tabBarActive: "yellow",
 };
 
 export default ColorPalette;
