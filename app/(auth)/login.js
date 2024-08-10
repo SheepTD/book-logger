@@ -51,12 +51,35 @@ export default function Login() {
     }
   };
 
+  const size = Size();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "left",
+      backgroundColor: ColorPalette.bg,
+    },
+    input: {
+      height: size.standardHeight,
+      marginLeft: size.marginLeft,
+      marginBottom: size.marginClose,
+      padding: 10,
+      width: size.standardWidth,
+      backgroundColor: ColorPalette.secondary,
+      fontSize: size.text,
+    },
+    label: {
+      fontSize: size.text,
+      marginLeft: size.marginLeft,
+    },
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.label}>Username or Email</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Enter your username or email"
         onChangeText={(text) => setUsernameOrEmail(text)}
         value={usernameOrEmail}
@@ -65,7 +88,7 @@ export default function Login() {
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Enter your password"
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
@@ -78,25 +101,3 @@ export default function Login() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "left",
-    backgroundColor: ColorPalette.bg,
-  },
-  input: {
-    height: Size.standardHeight,
-    marginLeft: Size.marginLeft,
-    marginBottom: Size.marginClose,
-    padding: 10,
-    width: Size.width,
-    backgroundColor: ColorPalette.secondary,
-    fontSize: Size.text,
-  },
-  label: {
-    fontSize: Size.text,
-    marginLeft: Size.marginLeft,
-  },
-});

@@ -44,11 +44,26 @@ export default function Booklist() {
     changelog: [],
     latestBookId: 0,
   });
-  const [editBookId, setEditBookId] = useState();
+  const [editBookId, setEditBookId] = useState("initial value");
   // tells the editBookId useEffect that it is being triggered for the first time
   const [initialLoad, setInitialLoad] = useState(true);
   // add book loading state
   const [loading, setLoading] = useState(false);
+
+  // styles
+  const size = Size();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "left",
+      alignItems: "left",
+      backgroundColor: ColorPalette.bg,
+    },
+    text: {
+      fontSize: size.text,
+      color: ColorPalette.text,
+    },
+  });
 
   // Fetch and set data on component mount
   useEffect(() => {
@@ -135,16 +150,3 @@ export default function Booklist() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "left",
-    backgroundColor: ColorPalette.bg,
-  },
-  text: {
-    fontSize: Size.text,
-    color: ColorPalette.text,
-  },
-});

@@ -25,6 +25,38 @@ export default function Access() {
     setLoading(true);
   };
 
+  //styles
+  const size = Size();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "left",
+      backgroundColor: ColorPalette.bg,
+    },
+    skipPressable: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: size.marginClose,
+      backgroundColor: ColorPalette.secondary,
+      marginLeft: size.marginLeft,
+      width: "40%",
+      maxHeight: size.standardHeight,
+      minHeight: size.standardHeight,
+    },
+    text: {
+      fontSize: size.text,
+    },
+    disclaimerContainer: {
+      textAlign: "left",
+      marginTop: size.marginClose,
+      marginLeft: size.marginLeft,
+      width: size.standardWidth,
+      maxWidth: "70ch", // change to global text width for web
+    },
+  });
+
   return (
     // if the user is logged in then redirect to the home page
     // <Redirect href={"/(tabs)/home"} />
@@ -53,32 +85,3 @@ export default function Access() {
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "left",
-    backgroundColor: ColorPalette.bg,
-  },
-  skipPressable: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: Size.marginClose,
-    backgroundColor: ColorPalette.secondary,
-    marginLeft: Size.marginLeft,
-    width: "40%",
-    maxHeight: Size.standardHeight,
-    minHeight: Size.standardHeight,
-  },
-  text: {
-    fontSize: Size.text,
-  },
-  disclaimerContainer: {
-    textAlign: "left",
-    marginTop: Size.marginClose,
-    marginLeft: Size.marginLeft,
-    width: Size.width,
-    maxWidth: "70ch", // change to global text width for web
-  },
-});

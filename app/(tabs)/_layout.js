@@ -4,12 +4,13 @@ import ColorPalette from "../../constants/ColorPalette";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function TabsLayout() {
+  const size = Size();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: Size.standardHeight,
+          height: size.tabBarHeight,
           elevation: 0,
           borderTopWidth: 0,
           backgroundColor: ColorPalette.tabBar,

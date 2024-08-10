@@ -11,11 +11,12 @@ export default function PrimaryBtn({
   disabled,
   children,
 }) {
+  const size = Size();
   const btnPosition = position ? position : "absolute";
-  const marginLeft = position ? Size.marginLeft : 0;
-  const marginBottom = position ? Size.marginClose : 0;
-  const left = position ? 0 : Size.marginLeft;
-  const bottom = position ? 0 : Size.marginClose;
+  const marginLeft = position ? size.marginLeft : 0;
+  const marginBottom = position ? size.marginClose : 0;
+  const left = position ? 0 : size.marginLeft;
+  const bottom = position ? 0 : size.marginClose;
 
   const styles = StyleSheet.create({
     container: {
@@ -23,9 +24,9 @@ export default function PrimaryBtn({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      width: Size.width,
-      maxHeight: Size.standardHeight,
-      minHeight: Size.standardHeight,
+      width: size.standardWidth,
+      maxHeight: size.standardHeight,
+      minHeight: size.standardHeight,
       backgroundColor: ColorPalette.primary,
       left: left,
       bottom: bottom,
@@ -34,7 +35,7 @@ export default function PrimaryBtn({
     },
     text: {
       color: ColorPalette.primaryText,
-      fontSize: Size.text,
+      fontSize: size.text,
     },
   });
 

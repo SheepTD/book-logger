@@ -63,6 +63,65 @@ export default function SignUp() {
   // hcaptcha state
   const [captchaToken, setCaptchaToken] = useState();
 
+  const size = Size();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "left",
+      backgroundColor: ColorPalette.bg,
+    },
+    input: {
+      height: size.standardHeight,
+      marginLeft: size.marginLeft,
+      marginBottom: size.marginClose,
+      padding: 10,
+      width: size.standardWidth,
+      backgroundColor: ColorPalette.secondary,
+      fontSize: size.text,
+    },
+    label: {
+      fontSize: size.text,
+      marginLeft: size.marginLeft,
+    },
+    captchaBtn: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: size.marginClose,
+      backgroundColor: ColorPalette.secondary,
+      marginLeft: size.marginLeft,
+      width: "40%",
+      maxHeight: size.standardHeight,
+      minHeight: size.standardHeight,
+      marginBottom: size.marginClose,
+    },
+    validCaptchaBtn: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: size.marginClose,
+      backgroundColor: ColorPalette.green,
+      marginLeft: size.marginLeft,
+      width: "40%",
+      maxHeight: size.standardHeight,
+      minHeight: size.standardHeight,
+      marginBottom: size.marginClose,
+    },
+    btnText: {
+      fontSize: size.text,
+    },
+    reminder: {
+      fontSize: size.text,
+      marginLeft: size.marginLeft,
+      color: ColorPalette.red,
+      marginBottom: size.marginFar,
+    },
+    blank: {
+      display: "none",
+    },
+  });
+
   // username reminder useEffect
   useEffect(() => {
     async function usernameUseEffect() {
@@ -250,7 +309,7 @@ export default function SignUp() {
       <Text style={styles.label}>Username</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Enter username"
         onChangeText={(text) => setUsername(text)}
         value={username}
@@ -262,11 +321,11 @@ export default function SignUp() {
       <Text style={styles.label}>Name</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Enter your name"
         onChangeText={(text) => setName(text)}
         value={name}
-        autoCapitalize="none"
+        autoCapitalize="words"
       />
       <Text style={nameReminder !== "" ? styles.reminder : styles.blank}>
         {nameReminder}
@@ -274,7 +333,7 @@ export default function SignUp() {
       <Text style={styles.label}>Email (Optional)</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Enter your email address"
         onChangeText={(text) => setEmail(text)}
         value={email}
@@ -286,7 +345,7 @@ export default function SignUp() {
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Enter password"
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
@@ -299,7 +358,7 @@ export default function SignUp() {
       <Text style={styles.label}>Confirm Password</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.text}
+        cursorColor={ColorPalette.cursor}
         placeholder="Repeat Password"
         autoCapitalize="none"
         onChangeText={(text) => setConfirmPassword(text)}
@@ -350,61 +409,3 @@ export default function SignUp() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "left",
-    backgroundColor: ColorPalette.bg,
-  },
-  input: {
-    height: Size.standardHeight,
-    marginLeft: Size.marginLeft,
-    marginBottom: Size.marginClose,
-    padding: 10,
-    width: Size.width,
-    backgroundColor: ColorPalette.secondary,
-    fontSize: Size.text,
-  },
-  label: {
-    fontSize: Size.text,
-    marginLeft: Size.marginLeft,
-  },
-  captchaBtn: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: Size.marginClose,
-    backgroundColor: ColorPalette.secondary,
-    marginLeft: Size.marginLeft,
-    width: "40%",
-    maxHeight: Size.standardHeight,
-    minHeight: Size.standardHeight,
-    marginBottom: Size.marginClose,
-  },
-  validCaptchaBtn: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: Size.marginClose,
-    backgroundColor: ColorPalette.green,
-    marginLeft: Size.marginLeft,
-    width: "40%",
-    maxHeight: Size.standardHeight,
-    minHeight: Size.standardHeight,
-    marginBottom: Size.marginClose,
-  },
-  btnText: {
-    fontSize: Size.text,
-  },
-  reminder: {
-    fontSize: Size.text,
-    marginLeft: Size.marginLeft,
-    color: ColorPalette.red,
-    marginBottom: Size.marginFar,
-  },
-  blank: {
-    display: "none",
-  },
-});

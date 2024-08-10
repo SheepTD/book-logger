@@ -10,6 +10,7 @@ const ColorPalette = {
   green: "green",
   tabBar: "orange",
   tabBarActive: "yellow",
+  cursor: "white",
 };
 
 export default ColorPalette;
