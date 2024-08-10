@@ -250,7 +250,7 @@ export default function SignUp() {
       <Text style={styles.label}>Username</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Enter username"
         onChangeText={(text) => setUsername(text)}
         value={username}
@@ -262,7 +262,7 @@ export default function SignUp() {
       <Text style={styles.label}>Name</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Enter your name"
         onChangeText={(text) => setName(text)}
         value={name}
@@ -274,7 +274,7 @@ export default function SignUp() {
       <Text style={styles.label}>Email (Optional)</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Enter your email address"
         onChangeText={(text) => setEmail(text)}
         value={email}
@@ -286,7 +286,7 @@ export default function SignUp() {
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Enter password"
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
@@ -299,7 +299,7 @@ export default function SignUp() {
       <Text style={styles.label}>Confirm Password</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Repeat Password"
         autoCapitalize="none"
         onChangeText={(text) => setConfirmPassword(text)}
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: ColorPalette.bg,
   },
   input: {
-    height: Size.inputHeight,
+    height: Size.standardHeight,
     marginLeft: Size.marginLeft,
     marginBottom: Size.marginClose,
     padding: 10,
@@ -379,8 +379,8 @@ const styles = StyleSheet.create({
     backgroundColor: ColorPalette.secondary,
     marginLeft: Size.marginLeft,
     width: "40%",
-    maxHeight: Size.inputHeight,
-    minHeight: Size.inputHeight,
+    maxHeight: Size.standardHeight,
+    minHeight: Size.standardHeight,
     marginBottom: Size.marginClose,
   },
   validCaptchaBtn: {
@@ -391,8 +391,8 @@ const styles = StyleSheet.create({
     backgroundColor: ColorPalette.green,
     marginLeft: Size.marginLeft,
     width: "40%",
-    maxHeight: Size.inputHeight,
-    minHeight: Size.inputHeight,
+    maxHeight: Size.standardHeight,
+    minHeight: Size.standardHeight,
     marginBottom: Size.marginClose,
   },
   btnText: {

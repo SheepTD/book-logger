@@ -9,7 +9,7 @@ const Size = {
   marginClose: 10,
   marginFar: 20,
   marginLeft: 0.05 * width,
-  inputHeight: 0.08 * height,
+  standardHeight: 0.08 * height,
   width: 0.9 * width,
   text: 16,
   header: 24,

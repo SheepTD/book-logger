@@ -9,7 +9,7 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: Size.inputHeight,
+          height: Size.standardHeight,
           elevation: 0,
           borderTopWidth: 0,
           backgroundColor: ColorPalette.tabBar,

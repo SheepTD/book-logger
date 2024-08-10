@@ -3,6 +3,7 @@ import { supabase } from "../utils/supabase";
 import { router } from "expo-router";
 
 export default function Index() {
+  // redirect user depending on if they are logged in or signed out.
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {

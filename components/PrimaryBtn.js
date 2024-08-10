@@ -24,8 +24,8 @@ export default function PrimaryBtn({
       justifyContent: "center",
       alignItems: "center",
       width: Size.width,
-      maxHeight: Size.inputHeight,
-      minHeight: Size.inputHeight,
+      maxHeight: Size.standardHeight,
+      minHeight: Size.standardHeight,
       backgroundColor: ColorPalette.primary,
       left: left,
       bottom: bottom,
@@ -33,7 +33,7 @@ export default function PrimaryBtn({
       marginBottom: marginBottom,
     },
     text: {
-      color: ColorPalette.primaryFont,
+      color: ColorPalette.primaryText,
       fontSize: Size.text,
     },
   });

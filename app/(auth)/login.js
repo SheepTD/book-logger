@@ -56,7 +56,7 @@ export default function Login() {
       <Text style={styles.label}>Username or Email</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Enter your username or email"
         onChangeText={(text) => setUsernameOrEmail(text)}
         value={usernameOrEmail}
@@ -65,7 +65,7 @@ export default function Login() {
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        cursorColor={ColorPalette.font}
+        cursorColor={ColorPalette.text}
         placeholder="Enter your password"
         autoCapitalize="none"
         onChangeText={(text) => setPassword(text)}
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: ColorPalette.bg,
   },
   input: {
-    height: Size.inputHeight,
+    height: Size.standardHeight,
     marginLeft: Size.marginLeft,
     marginBottom: Size.marginClose,
     padding: 10,

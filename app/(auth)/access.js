@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
     backgroundColor: ColorPalette.secondary,
     marginLeft: Size.marginLeft,
     width: "40%",
-    maxHeight: Size.inputHeight,
-    minHeight: Size.inputHeight,
+    maxHeight: Size.standardHeight,
+    minHeight: Size.standardHeight,
   },
   text: {
     fontSize: Size.text,
@@ -82,36 +82,3 @@ const styles = StyleSheet.create({
     maxWidth: "70ch", // change to global text width for web
   },
 });
-
-// copied from supabase docs & modified to run as JS not TS
-// https://supabase.com/docs/guides/getting-started/tutorials/with-expo-react-native?queryGroups=auth-store&auth-store=async-storage
-
-// import { useState, useEffect } from "react";
-// import { supabase } from "../utils/supabase";
-// import Auth from "../components/Auth";
-// import Account from "../components/Account";
-// import { View } from "react-native";
-
-// export default function InitialSetup() {
-//   const [session, setSession] = useState(null);
-
-//   useEffect(() => {
-//     supabase.auth.getSession().then(({ data: { session } }) => {
-//       setSession(session);
-//     });
-
-//     supabase.auth.onAuthStateChange((_event, session) => {
-//       setSession(session);
-//     });
-//   }, []);
-
-//   return (
-//     <View>
-//       {session && session.user ? (
-//         <Account key={session.user.id} session={session} />
-//       ) : (
-//         <Auth />
-//       )}
-//     </View>
-//   );
-// }
