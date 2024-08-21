@@ -24,5 +24,6 @@ export default function Size() {
     standardWidth: 0.9 * width,
     text: 16,
     header: 24,
+    padding: 10,
   };
 }

@@ -20,6 +20,7 @@ export default function Login() {
 
   // log in function
   const logIn = async () => {
+    console.log("log in pressed"); // remove this
     if (usernameOrEmail.length > 0 && password.length > 0) {
       setLoading(true);
       // use edge function to log in
@@ -29,10 +30,16 @@ export default function Login() {
           password: password,
         }),
       });
-      if (error) Alert.alert(error.message); // update to work on web
+      console.log("supabase function invoked"); // remove this
+      if (error) {
+        Alert.alert(error.message); // update to work on web
+        console.log(error.message);
+      }
       // set session using auth function:
       const access_token = data.session.access_token;
       const refresh_token = data.session.refresh_token;
+      console.log("access token:", access_token); // remove this
+      console.log("refresh token:", refresh_token); // remove this
       // it has to be inside it's own function so it can use "error" as a
       // variable without clashing with the "error" variable for the edge
       // function.
@@ -41,7 +48,11 @@ export default function Login() {
           access_token: access_token,
           refresh_token: refresh_token,
         });
-        if (error) Alert.alert(error.message); // update to work on web
+        console.log("supabase set session invoked");
+        if (error) {
+          Alert.alert(error.message); // update to work on web
+          console.log(error.message); // remove this
+        }
       };
       await setSession(access_token, refresh_token);
       setLoading(false);
