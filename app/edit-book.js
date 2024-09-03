@@ -1,269 +1,344 @@
 // TODO:
+// Add functions to handle if booklist or selected book id are null i.e. they have not been saved to Async Storage yet
 // Genre related functionality: retrive genres from save, add and save new genre
 // Add validitiy checks and warning to all inputs
 // Update layout to match the design
 
-import { Text, StyleSheet, View, TextInput } from "react-native";
+import { Text, StyleSheet, View, TextInput, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ColorPalette from "../constants/ColorPalette";
 import Size from "../constants/Size";
 import { useEffect, useState } from "react";
 import PrimaryBtn from "../components/PrimaryBtn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { supabase } from "../utils/supabase";
 import { router } from "expo-router";
 
-export default function EditBook() {}
+export default function EditBook() {
+  // AsyncStorage state
+  const [booklist, setBooklist] = useState({
+    books: [],
+    changelog: [],
+    latestBookId: 0,
+  });
+  const [selectedBookId, setSelectedBookId] = useState(0);
+  // input state
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [finishDate, setFinishDate] = useState("");
+  const [genre, setGenre] = useState("");
+  const [rating, setRating] = useState();
+  const [review, setReview] = useState("");
+  const [section, setSection] = useState("Reading");
+  // loading state
+  const [loading, setLoading] = useState(false);
 
-// // get or set data from local storage
-// const getData = async (key, expectedValue) => {
-//   try {
-//     // Try to get the item from AsyncStorage
-//     const jsonValue = await AsyncStorage.getItem(key);
+  // fetch data on initial load
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      let parsedBooklist; // declared outside of the "try/accept" to be used "if" statement
+      try {
+        const stringBooklist = await AsyncStorage.getItem("booklist");
+        console.log("Fetched booklist:", stringBooklist); // remove this
+        parsedBooklist = JSON.parse(stringBooklist);
+        setBooklist(parsedBooklist);
+      } catch (e) {
+        console.log("Error fetching booklist data:", e); // change this
+      }
+      let parsedSelectedBookId; // declared outside of the "try/accept" to be used "if" statement
+      try {
+        const stringSelectedBookId = await AsyncStorage.getItem(
+          "selected-book-id"
+        );
+        console.log("Fetched selected book id:", stringSelectedBookId);
+        parsedSelectedBookId = JSON.parse(stringSelectedBookId);
+        setSelectedBookId(parsedSelectedBookId);
+      } catch (e) {
+        console.log("Error fetching selected book id:", e);
+      }
+      // update inputs if selected book id is not 0
+      if (parsedSelectedBookId !== 0 && parsedSelectedBookId !== null) {
+        console.log("Selected Book Id is not set to 0 or null");
+        // Filter out the selected book
+        const selectedBook = parsedBooklist.books.find(
+          (item) => item.id === parsedSelectedBookId
+        );
+        if (!selectedBook) {
+          console.log("Book not found");
+          setLoading(false);
+          return;
+        }
+        setTitle(selectedBook.title);
+        setAuthor(selectedBook.author);
+        setStartDate(selectedBook.startDate);
+        setFinishDate(selectedBook.finishDate);
+        setGenre(selectedBook.genre);
+        setRating(selectedBook.rating);
+        setReview(selectedBook.review);
+        setSection(selectedBook.section);
+      } else {
+        console.log("Selected book id is set to 0  or null");
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
-//     // If the item exists, parse and return it
-//     if (jsonValue !== null) {
-//       return JSON.parse(jsonValue);
-//     } else {
-//       // If the item does not exist, set it with the expectedValue
-//       const newJsonValue = JSON.stringify(expectedValue);
-//       await AsyncStorage.setItem(key, newJsonValue);
+  // styles
+  const size = Size();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "left",
+      alignItems: "left",
+      backgroundColor: ColorPalette.bg,
+    },
+    header: {
+      flex: 1,
+      maxHeight: size.headerHeight,
+      width: "100%",
+      backgroundColor: ColorPalette.tabBar,
+      marginBottom: size.marginClose,
+    },
+    input: {
+      height: size.thinHeight,
+      marginLeft: size.marginLeft,
+      marginBottom: size.marginClose,
+      padding: size.padding,
+      width: size.standardWidth,
+      backgroundColor: ColorPalette.secondary,
+      fontSize: size.text,
+    },
+    label: {
+      fontSize: size.text,
+      marginLeft: size.marginLeft,
+    },
+    datesContainer: {
+      flex: 1,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginLeft: size.marginLeft,
+      marginBottom: size.marginClose,
+      width: size.standardWidth,
+      maxHeight: size.thinHeight,
+    },
+    dateInput: {
+      height: size.thinHeight,
+      padding: size.padding,
+      width: 0.475 * size.standardWidth,
+      backgroundColor: ColorPalette.secondary,
+      fontSize: size.text,
+    },
+    sectionContainer: {
+      flex: 1,
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      marginLeft: size.marginLeft,
+      minHeight: size.standardHeight,
+      maxHeight: size.standardHeight,
+      width: size.standardWidth,
+    },
+    sectionBtn: {
+      backgroundColor: ColorPalette.secondary,
+      padding: size.padding,
+    },
+  });
 
-//       return expectedValue;
-//     }
-//   } catch (e) {
-//     console.error("Error accessing or setting data in AsyncStorage:", e); // change this
-//     return null; // Or handle the error according to your needs
-//   }
-// };
+  // reset selected book id and rediredt to booklist page
+  const onCancel = async () => {
+    console.log("Cancel pressed"); // remove this
+    await setLoading(true);
+    const stringUpdatedSelectedBookId = JSON.stringify(0);
+    try {
+      await AsyncStorage.setItem(
+        "selected-book-id",
+        stringUpdatedSelectedBookId
+      );
+      console.log(
+        "Selected book id has been saved:",
+        stringUpdatedSelectedBookId
+      ); // remove this
+    } catch (e) {
+      console.log("Error saving selected book id:", e); // change this
+    }
+    router.replace("/(tabs)/booklist");
+  };
 
-// const setData = async (key, value, isString) => {
-//   if (isString) {
-//     try {
-//       await AsyncStorage.setItem(key, value);
-//     } catch (e) {
-//       console.log("Error setting data in AsyncStorage:", e); // change this
-//     }
-//   } else {
-//     try {
-//       const jsonValue = JSON.stringify(value);
-//       await AsyncStorage.setItem(key, jsonValue);
-//     } catch (e) {
-//       console.log("Error setting data in AsyncStorage:", e); // change this
-//     }
-//   }
-// };
+  // save selected book id and booklist, then redirect back to booklist page
+  const onSaveBook = async () => {
+    console.log("Save book pressed"); // remove this
+    await setLoading(true);
+    let updatedBooklist = booklist;
+    // remove the old version of the book if editing
+    if (selectedBookId !== 0 && selectedBookId !== null) {
+      console.log("Selected book id is not equal to 0 or null");
+      updatedBooklist.books = booklist.books.filter(
+        (item) => item.id !== selectedBookId
+      );
+      updatedBooklist.books.push({
+        title: title,
+        author: author,
+        startDate: startDate,
+        finishDate: finishDate,
+        genre: genre,
+        rating: rating,
+        review: review,
+        section: section,
+        id: updatedBooklist.latestBookId,
+      });
+    } else {
+      updatedBooklist.latestBookId += 1;
+      updatedBooklist.books.push({
+        title: title,
+        author: author,
+        startDate: startDate,
+        finishDate: finishDate,
+        genre: genre,
+        rating: rating,
+        review: review,
+        section: section,
+        id: updatedBooklist.latestBookId,
+      });
+    }
+    const stringUpdatedSelectedBookId = JSON.stringify(0);
+    const stringUpdatedBooklist = JSON.stringify(updatedBooklist);
+    try {
+      await AsyncStorage.setItem(
+        "selected-book-id",
+        stringUpdatedSelectedBookId
+      );
+      console.log(
+        "Selected book id has been saved:",
+        stringUpdatedSelectedBookId
+      ); // remove this
+    } catch (e) {
+      console.log("Error saving selected book id:", e); // change this
+    }
+    try {
+      await AsyncStorage.setItem("booklist", stringUpdatedBooklist);
+      console.log("Booklist has been saved:", stringUpdatedBooklist); // remove this
+    } catch (e) {
+      console.log("Error saving booklist:", e); // change this
+    }
+    console.log("Redirecting to the Booklist Page"); // remove this
+    router.replace("/(tabs)/booklist");
+  };
 
-// export default function EditBook() {
-//   // async storage state
-//   const [genres, setGenres] = useState([
-//     "Adventure",
-//     "Dystopian",
-//     "Fantasy",
-//     "Health",
-//     "Historical Fiction",
-//     "Horror",
-//     "Mystery",
-//     "Non-Fiction",
-//     "Philosophy",
-//     "Poetry",
-//     "Romance",
-//     "Science",
-//     "Science Fiction",
-//     "Self-Help",
-//     "Thriller",
-//     "Travel",
-//     "True Crime",
-//   ]);
-//   const [booklist, setBooklist] = useState({
-//     books: [],
-//     changelog: [],
-//     latestBookId: 0,
-//   });
-//   const [editBookId, setEditBookId] = useState("initial value");
-//   // input state
-//   const [title, setTitle] = useState("");
-//   const [author, setAuthor] = useState("");
-//   const [startDate, setStartDate] = useState("");
-//   const [finishDate, setFinishDate] = useState("");
-//   const [genre, setGenre] = useState("");
-//   const [rating, setRating] = useState();
-//   const [review, setReview] = useState("");
-//   // loading state
-//   const [loading, setLoading] = useState(false);
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text>Header</Text>
+        <Pressable onPress={onCancel} disabled={loading}>
+          <Text>Cancel</Text>
+        </Pressable>
+      </View>
+      <Text style={styles.label}>Title</Text>
+      <TextInput
+        style={styles.input}
+        cursorColor={ColorPalette.cursor}
+        placeholder="Enter title"
+        onChangeText={(text) => setTitle(text)}
+        value={title}
+        autoCapitalize="words"
+      />
+      <Text style={styles.label}>Author</Text>
+      <TextInput
+        style={styles.input}
+        cursorColor={ColorPalette.cursor}
+        placeholder="Enter author"
+        onChangeText={(text) => setAuthor(text)}
+        value={author}
+        autoCapitalize="words"
+      />
+      <Text style={styles.label}>Dates</Text>
+      <View style={styles.datesContainer}>
+        <TextInput
+          style={styles.dateInput}
+          cursorColor={ColorPalette.cursor}
+          placeholder="Enter start date"
+          onChangeText={(text) => setStartDate(text)}
+          value={startDate}
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.dateInput}
+          cursorColor={ColorPalette.cursor}
+          placeholder="Enter finish date"
+          onChangeText={(text) => setFinishDate(text)}
+          value={finishDate}
+          autoCapitalize="none"
+        />
+      </View>
 
-//   // Fetch and set data on component mount
-//   useEffect(() => {
-//     const fetchSetData = async () => {
-//       const data = await getData("booklist", {
-//         books: [],
-//         changelog: [],
-//         latestBookId: 0,
-//       });
-//       setBooklist(data);
-//       console.log("Booklist data has been fetched/set:", booklist); // change this
-//       const id = await getData("selected-book", "");
-//       setEditBookId(id);
-//     };
-//     fetchSetData();
+      <Text style={styles.label}>Genre</Text>
+      <TextInput
+        style={styles.input}
+        cursorColor={ColorPalette.cursor}
+        placeholder="Enter genre"
+        onChangeText={(text) => setGenre(text)}
+        value={genre}
+        autoCapitalize="words"
+      />
 
-//     // ensure that the user is logged in
-//     supabase.auth.getSession().then(({ data: { session } }) => {
-//       if (!session) {
-//         router.replace("/(auth)/access");
-//       }
-//     });
-//   }, []);
+      <Text style={styles.label}>Rating</Text>
+      <TextInput
+        style={styles.input}
+        cursorColor={ColorPalette.cursor}
+        placeholder="Enter rating from 1 to 10"
+        onChangeText={(text) => setRating(text)}
+        value={rating}
+        autoCapitalize="words"
+      />
 
-//   const onSaveBook = async () => {
-//     setLoading(true);
-//     // check that all of the inputs are valid
-//     const newBooklist = booklist;
-//     newBooklist.books.push({
-//       id: editBookId === "" ? booklist.latestBookId + 1 : editBookId,
-//       section: "reading", // add logic for this
-//       title: title,
-//       author: author,
-//       startDate: startDate,
-//       finishDate: finishDate,
-//       genre: genre,
-//       rating: rating,
-//       review: review,
-//     });
-//     setBooklist(newBooklist);
-//     console.log("booklist set:", booklist);
-//     // save updated booklist to async storage
-//     const saveBook = async () => {
-//       await setData("booklist", booklist, false);
-//       console.log("booklist saved to local storage:", booklist);
-//       router.replace("booklist");
-//     };
-//     saveBook();
-//   };
+      <Text style={styles.label}>Review</Text>
+      <TextInput
+        style={styles.input}
+        cursorColor={ColorPalette.cursor}
+        placeholder="Write review here"
+        onChangeText={(text) => setReview(text)}
+        value={review}
+        autoCapitalize="sentences"
+      />
 
-//   // styles
-//   const size = Size();
-//   const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       justifyContent: "left",
-//       alignItems: "left",
-//       backgroundColor: ColorPalette.bg,
-//     },
-//     header: {
-//       flex: 1,
-//       maxHeight: size.headerHeight,
-//       width: "100%",
-//       backgroundColor: ColorPalette.tabBar,
-//       marginBottom: size.marginClose,
-//     },
-//     input: {
-//       height: size.thinHeight,
-//       marginLeft: size.marginLeft,
-//       marginBottom: size.marginClose,
-//       padding: size.padding,
-//       width: size.standardWidth,
-//       backgroundColor: ColorPalette.secondary,
-//       fontSize: size.text,
-//     },
-//     label: {
-//       fontSize: size.text,
-//       marginLeft: size.marginLeft,
-//     },
-//     datesContainer: {
-//       flex: 1,
-//       flexDirection: "row",
-//       justifyContent: "space-between",
-//       alignItems: "center",
-//       marginLeft: size.marginLeft,
-//       marginBottom: size.marginClose,
-//       width: size.standardWidth,
-//       maxHeight: size.thinHeight,
-//     },
-//     dateInput: {
-//       height: size.thinHeight,
-//       padding: size.padding,
-//       width: 0.475 * size.standardWidth,
-//       backgroundColor: ColorPalette.secondary,
-//       fontSize: size.text,
-//     },
-//   });
+      <View style={styles.sectionContainer}>
+        <Pressable
+          onPress={() => setSection("Reading")}
+          style={
+            section === "Reading"
+              ? [styles.sectionBtn, { backgroundColor: ColorPalette.primary }]
+              : styles.sectionBtn
+          }
+        >
+          <Text>Reading</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setSection("Want to Read")}
+          style={
+            section === "Want to Read"
+              ? [styles.sectionBtn, { backgroundColor: ColorPalette.primary }]
+              : styles.sectionBtn
+          }
+        >
+          <Text>Want to Read</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setSection("Read")}
+          style={
+            section === "Read"
+              ? [styles.sectionBtn, { backgroundColor: ColorPalette.primary }]
+              : styles.sectionBtn
+          }
+        >
+          <Text>Read</Text>
+        </Pressable>
+      </View>
 
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <View style={styles.header}>
-//         <Text>Header</Text>
-//       </View>
-//       <Text style={styles.label}>Title</Text>
-//       <TextInput
-//         style={styles.input}
-//         cursorColor={ColorPalette.cursor}
-//         placeholder="Enter title"
-//         onChangeText={(text) => setTitle(text)}
-//         value={title}
-//         autoCapitalize="words"
-//       />
-//       <Text style={styles.label}>Author</Text>
-//       <TextInput
-//         style={styles.input}
-//         cursorColor={ColorPalette.cursor}
-//         placeholder="Enter author"
-//         onChangeText={(text) => setAuthor(text)}
-//         value={author}
-//         autoCapitalize="words"
-//       />
-//       <Text style={styles.label}>Dates</Text>
-//       <View style={styles.datesContainer}>
-//         <TextInput
-//           style={styles.dateInput}
-//           cursorColor={ColorPalette.cursor}
-//           placeholder="Enter start date"
-//           onChangeText={(text) => setStartDate(text)}
-//           value={startDate}
-//           autoCapitalize="none"
-//         />
-//         <TextInput
-//           style={styles.dateInput}
-//           cursorColor={ColorPalette.cursor}
-//           placeholder="Enter finish date"
-//           onChangeText={(text) => setFinishDate(text)}
-//           value={finishDate}
-//           autoCapitalize="none"
-//         />
-//       </View>
-
-//       <Text style={styles.label}>Genre</Text>
-//       <TextInput
-//         style={styles.input}
-//         cursorColor={ColorPalette.cursor}
-//         placeholder="Enter genre"
-//         onChangeText={(text) => setGenre(text)}
-//         value={genre}
-//         autoCapitalize="words"
-//       />
-
-//       <Text style={styles.label}>Rating</Text>
-//       <TextInput
-//         style={styles.input}
-//         cursorColor={ColorPalette.cursor}
-//         placeholder="Enter rating from 1 to 10"
-//         onChangeText={(text) => setRating(text)}
-//         value={rating}
-//         autoCapitalize="words"
-//       />
-
-//       <Text style={styles.label}>Review</Text>
-//       <TextInput
-//         style={styles.input}
-//         cursorColor={ColorPalette.cursor}
-//         placeholder="Write review here"
-//         onChangeText={(text) => setReview(text)}
-//         value={review}
-//         autoCapitalize="sentences"
-//       />
-//       <PrimaryBtn onPress={onSaveBook} disabled={loading}>
-//         Save Book
-//       </PrimaryBtn>
-//     </SafeAreaView>
-//   );
-// }
+      <PrimaryBtn onPress={onSaveBook} disabled={loading}>
+        Save Book
+      </PrimaryBtn>
+    </SafeAreaView>
+  );
+}

@@ -25,5 +25,6 @@ export default function Size() {
     text: 16,
     header: 24,
     padding: 10,
+    headingText: 24,
   };
 }
