@@ -1,4 +1,10 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
 import ColorPalette from "../../constants/ColorPalette";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -249,7 +255,8 @@ export default function Booklist() {
   return (
     <SafeAreaView style={styles.container}>
       <Header>
-        <Text>Header</Text>
+        <TextInput disabled={loading} />
+        <Text>Hello World</Text>
       </Header>
       <ScrollView style={styles.bookListContainer}>
         <Text style={styles.heading}>Recommended</Text>

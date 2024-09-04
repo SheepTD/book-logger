@@ -225,7 +225,6 @@ export default function EditBook() {
   return (
     <SafeAreaView style={styles.container}>
       <Header>
-        <Text>Header</Text>
         <Pressable onPress={onCancel} disabled={loading}>
           <Text>Cancel</Text>
         </Pressable>

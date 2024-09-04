@@ -1,3 +1,4 @@
+import React from "react";
 import { View, StyleSheet } from "react-native";
 import Size from "../constants/Size";
 import ColorPalette from "../constants/ColorPalette";
@@ -7,6 +8,9 @@ export default function Header({ styling, children }) {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
       maxHeight: size.headerHeight,
       width: "100%",
       backgroundColor: ColorPalette.tabBar,
@@ -14,5 +18,5 @@ export default function Header({ styling, children }) {
     },
   });
 
-  return <View style={[styling, styles.container]}>{children}</View>;
+  return <View style={[styles.container, styling]}>{children}</View>;
 }
