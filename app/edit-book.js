@@ -237,6 +237,7 @@ export default function EditBook() {
       </View>
       <Text style={styles.label}>Title</Text>
       <TextInput
+        disabled={loading}
         style={styles.input}
         cursorColor={ColorPalette.cursor}
         placeholder="Enter title"
@@ -246,6 +247,7 @@ export default function EditBook() {
       />
       <Text style={styles.label}>Author</Text>
       <TextInput
+        disabled={loading}
         style={styles.input}
         cursorColor={ColorPalette.cursor}
         placeholder="Enter author"
@@ -256,6 +258,7 @@ export default function EditBook() {
       <Text style={styles.label}>Dates</Text>
       <View style={styles.datesContainer}>
         <TextInput
+          disabled={loading}
           style={styles.dateInput}
           cursorColor={ColorPalette.cursor}
           placeholder="Enter start date"
@@ -264,6 +267,7 @@ export default function EditBook() {
           autoCapitalize="none"
         />
         <TextInput
+          disabled={loading}
           style={styles.dateInput}
           cursorColor={ColorPalette.cursor}
           placeholder="Enter finish date"
@@ -275,6 +279,7 @@ export default function EditBook() {
 
       <Text style={styles.label}>Genre</Text>
       <TextInput
+        disabled={loading}
         style={styles.input}
         cursorColor={ColorPalette.cursor}
         placeholder="Enter genre"
@@ -285,6 +290,7 @@ export default function EditBook() {
 
       <Text style={styles.label}>Rating</Text>
       <TextInput
+        disabled={loading}
         style={styles.input}
         cursorColor={ColorPalette.cursor}
         placeholder="Enter rating from 1 to 10"
@@ -295,6 +301,7 @@ export default function EditBook() {
 
       <Text style={styles.label}>Review</Text>
       <TextInput
+        disabled={loading}
         style={styles.input}
         cursorColor={ColorPalette.cursor}
         placeholder="Write review here"
@@ -305,6 +312,7 @@ export default function EditBook() {
 
       <View style={styles.sectionContainer}>
         <Pressable
+          disabled={loading}
           onPress={() => setSection("Reading")}
           style={
             section === "Reading"
@@ -315,6 +323,7 @@ export default function EditBook() {
           <Text>Reading</Text>
         </Pressable>
         <Pressable
+          disabled={loading}
           onPress={() => setSection("Want to Read")}
           style={
             section === "Want to Read"
@@ -325,6 +334,7 @@ export default function EditBook() {
           <Text>Want to Read</Text>
         </Pressable>
         <Pressable
+          disabled={loading}
           onPress={() => setSection("Read")}
           style={
             section === "Read"
