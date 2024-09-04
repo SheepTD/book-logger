@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import Size from "../constants/Size";
 import ColorPalette from "../constants/ColorPalette";
 
-export default function Header({ styling, children }) {
+export default function Header({ style, children }) {
   const size = Size();
   const styles = StyleSheet.create({
     container: {
@@ -18,5 +18,5 @@ export default function Header({ styling, children }) {
     },
   });
 
-  return <View style={[styles.container, styling]}>{children}</View>;
+  return <View style={[styles.container, style]}>{children}</View>;
 }
