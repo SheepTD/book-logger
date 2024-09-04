@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import PrimaryBtn from "../components/PrimaryBtn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import Header from "../components/Header";
 
 export default function EditBook() {
   // AsyncStorage state
@@ -94,13 +95,7 @@ export default function EditBook() {
       alignItems: "left",
       backgroundColor: ColorPalette.bg,
     },
-    header: {
-      flex: 1,
-      maxHeight: size.headerHeight,
-      width: "100%",
-      backgroundColor: ColorPalette.tabBar,
-      marginBottom: size.marginClose,
-    },
+
     input: {
       height: size.thinHeight,
       marginLeft: size.marginLeft,
@@ -229,12 +224,12 @@ export default function EditBook() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <Header>
         <Text>Header</Text>
         <Pressable onPress={onCancel} disabled={loading}>
           <Text>Cancel</Text>
         </Pressable>
-      </View>
+      </Header>
       <Text style={styles.label}>Title</Text>
       <TextInput
         disabled={loading}

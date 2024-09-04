@@ -103,7 +103,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Size from "../constants/Size";
 import ColorPalette from "../constants/ColorPalette";
 

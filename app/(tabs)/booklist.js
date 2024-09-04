@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PrimaryBtn from "../../components/PrimaryBtn";
 import Size from "../../constants/Size";
 import { Text } from "react-native";
+import Header from "../../components/Header";
 
 // const deleteEverything = async () => {
 //   let keys = [];
@@ -84,13 +85,7 @@ export default function Booklist() {
       fontSize: size.text,
       color: ColorPalette.text,
     },
-    header: {
-      flex: 1,
-      maxHeight: size.headerHeight,
-      width: "100%",
-      backgroundColor: ColorPalette.tabBar,
-      marginBottom: size.marginClose,
-    },
+
     bookContainer: {
       flex: 1,
       width: size.standardWidth,
@@ -253,9 +248,9 @@ export default function Booklist() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <Header>
         <Text>Header</Text>
-      </View>
+      </Header>
       <ScrollView style={styles.bookListContainer}>
         <Text style={styles.heading}>Recommended</Text>
         {booklist.books.map((value, index) => {
