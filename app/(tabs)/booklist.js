@@ -255,7 +255,6 @@ export default function Booklist() {
   return (
     <SafeAreaView style={styles.container}>
       <Header>
-        <TextInput disabled={loading} />
         <Text>Header</Text>
       </Header>
       <ScrollView style={styles.bookListContainer}>
