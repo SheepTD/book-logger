@@ -13,6 +13,7 @@ import PrimaryBtn from "../components/PrimaryBtn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import Header from "../components/Header";
+import dayjs from "dayjs";
 
 export default function EditBook() {
   // AsyncStorage state
@@ -167,6 +168,21 @@ export default function EditBook() {
     console.log("Save book pressed"); // remove this
     await setLoading(true);
     let updatedBooklist = booklist;
+    // test if dates are working
+    console.log("startDate:", startDate);
+    console.log("finishDate:", finishDate);
+    // format dates
+    const formattedStartDate = dayjs()
+      .set("year", startDate.split("/")[2])
+      .set("month", startDate.split("/")[1] - 1) // months start at 0
+      .set("date", startDate.split("/")[0]);
+    const formattedFinishDate = dayjs()
+      .set("year", finishDate.split("/")[2])
+      .set("month", finishDate.split("/")[1] - 1) // montsh start at 0
+      .set("date", finishDate.split("/")[0]);
+    // test formatted dates
+    console.log("formattedStartDate", formattedStartDate);
+    console.log("formattedFinishDate", formattedFinishDate);
     // remove the old version of the book if editing
     if (selectedBookId !== 0 && selectedBookId !== null) {
       console.log("Selected book id is not equal to 0 or null");
@@ -176,8 +192,8 @@ export default function EditBook() {
       updatedBooklist.books.push({
         title: title,
         author: author,
-        startDate: startDate,
-        finishDate: finishDate,
+        startDate: formattedStartDate,
+        finishDate: formattedFinishDate,
         genre: genre,
         rating: rating,
         review: review,
@@ -189,8 +205,8 @@ export default function EditBook() {
       updatedBooklist.books.push({
         title: title,
         author: author,
-        startDate: startDate,
-        finishDate: finishDate,
+        startDate: formattedStartDate,
+        finishDate: formattedFinishDate,
         genre: genre,
         rating: rating,
         review: review,

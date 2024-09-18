@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native";
 import Header from "../../components/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextInput } from "react-native";
 import Size from "../../constants/Size";
 import ColorPalette from "../../constants/ColorPalette";
@@ -9,9 +9,15 @@ import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 
 export default function Statistics() {
+  const [startDate, setStartDate] = useState(dayjs().startOf("year"));
   const [endDate, setEndDate] = useState(dayjs()); // set default end date to today
-  const [startDate, setStartDate] = useState();
   const [loading, setLoading] = useState(false);
+
+  // console log dates
+  useEffect(() => {
+    console.log("statDate:", startDate);
+    console.log("endDate:", endDate);
+  }, [startDate, endDate]);
 
   // styles
   const size = Size();

@@ -14,6 +14,7 @@ import PrimaryBtn from "../../components/PrimaryBtn";
 import Size from "../../constants/Size";
 import { Text } from "react-native";
 import Header from "../../components/Header";
+import dayjs from "dayjs";
 
 // const deleteEverything = async () => {
 //   let keys = [];
@@ -284,12 +285,15 @@ export default function Booklist() {
         <Text style={styles.heading}>Reading</Text>
         {booklist.books.map((value, index) => {
           if (value.section === "Reading") {
+            const formattedStartDate = dayjs(value.startDate).format(
+              "D/M/YYYY"
+            );
             return (
               <View key={index} style={styles.bookContainer}>
                 <Text key={"title" + index}>{value.title}</Text>
                 <Text key={"author" + index}>{value.author}</Text>
                 <Text key={"startDate" + index}>
-                  {value.startDate + " - " + "N/A"}
+                  {formattedStartDate + " - " + "N/A"}
                 </Text>
                 <Text key={"genre" + index}>{value.genre}</Text>
                 <View style={styles.bookBtnsContainer}>
@@ -339,12 +343,18 @@ export default function Booklist() {
         <Text style={styles.heading}>Read</Text>
         {booklist.books.map((value, index) => {
           if (value.section === "Read") {
+            const formattedStartDate = dayjs(value.startDate).format(
+              "D/M/YYYY"
+            );
+            const formattedFinishDate = dayjs(value.finishDate).format(
+              "D/M/YYYY"
+            );
             return (
               <View key={index} style={styles.bookContainer}>
                 <Text key={"title" + index}>{value.title}</Text>
                 <Text key={"author" + index}>{value.author}</Text>
                 <Text key={"dates" + index}>
-                  {value.startDate + " - " + value.finishDate}
+                  {formattedStartDate + " - " + formattedFinishDate}
                 </Text>
                 <Text key={"genre" + index}>{value.genre}</Text>
                 <View
