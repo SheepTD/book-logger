@@ -73,8 +73,8 @@ export default function EditBook() {
         }
         setTitle(selectedBook.title);
         setAuthor(selectedBook.author);
-        setStartDate(selectedBook.startDate);
-        setFinishDate(selectedBook.finishDate);
+        setStartDate(dayjs(selectedBook.startDate).format("DD/MM/YYYY"));
+        setFinishDate(dayjs(selectedBook.finishDate).format("DD/MM/YYYY"));
         setGenre(selectedBook.genre);
         setRating(selectedBook.rating);
         setReview(selectedBook.review);
@@ -143,7 +143,7 @@ export default function EditBook() {
     },
   });
 
-  // reset selected book id and rediredt to booklist page
+  // reset selected book id and redirect to booklist page
   const onCancel = async () => {
     console.log("Cancel pressed"); // remove this
     await setLoading(true);
