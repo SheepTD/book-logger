@@ -7,7 +7,6 @@ import ColorPalette from "../../constants/ColorPalette";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 export default function Statistics() {
   const [startDate, setStartDate] = useState(dayjs());
@@ -20,6 +19,8 @@ export default function Statistics() {
     latestBookId: 0,
   });
   const [favouriteBook, setFavouriteBook] = useState(null);
+  const [favouriteAuthor, setFavouriteAuthor] = useState(null);
+  const [favouriteGenre, setFavouriteGenre] = useState(null);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -54,6 +55,8 @@ export default function Statistics() {
     // set all to null if no books
     if (!booklist.books || booklist.books.length === 0) {
       setFavouriteBook(null);
+      setFavouriteAuthor(null);
+      setFavouriteGenre(null);
       console.log("No books found");
       return;
     }
@@ -94,6 +97,49 @@ export default function Statistics() {
     });
     setFavouriteBook(highestRatedBook);
     console.log("Favourite book set:", highestRatedBook);
+
+    // get highest ranked author on average in date range
+    const getHighestRankedAuthor = () => {
+      let highestRankedAuthor = null;
+      let highestAverageRating = -1;
+      let highestFinishDate = null;
+      const authorRatings = {};
+      booksInDateRange.forEach((book) => {
+        const author = book.author;
+        if (!authorRatings[author]) {
+          authorRatings[author] = { count: 0, sum: 0 };
+        }
+        authorRatings[author].sum += parseFloat(book.rating);
+        authorRatings[author].count += 1;
+      });
+      console.log("Author ratings:", authorRatings);
+      Object.keys(authorRatings).forEach((author) => {
+        const averageRating =
+          authorRatings[author].sum / authorRatings[author].count;
+        console.log(`${author} average rating: ${averageRating}`);
+        if (averageRating > highestAverageRating) {
+          highestAverageRating = averageRating;
+          highestRankedAuthor = author;
+          highestFinishDate = null;
+        } else if (averageRating === highestAverageRating) {
+          const finishDate = dayjs(
+            booksInDateRange.filter((book) => book.author === author)[0]
+              .finishDate
+          );
+          if (!highestFinishDate || finishDate.isAfter(highestFinishDate)) {
+            highestFinishDate = finishDate;
+            highestRankedAuthor = author;
+          }
+        }
+      });
+      console.log("Highest ranked author:", highestRankedAuthor);
+      return highestRankedAuthor;
+    };
+
+    setFavouriteAuthor(getHighestRankedAuthor());
+    console.log("Highest ranked author set:", getHighestRankedAuthor());
+
+    // get highest ranked genre on average in date range
   }, [startDate, endDate, booklist]);
 
   const size = Size();
@@ -212,6 +258,12 @@ export default function Statistics() {
         <Text style={styles.text}>Highest Rated Book:</Text>
         <Text style={styles.statText}>
           {favouriteBook ? favouriteBook.title : "No books found"}
+        </Text>
+      </View>
+      <View style={styles.statContainer}>
+        <Text style={styles.text}>Highest Rated Author (on average):</Text>
+        <Text style={styles.statText}>
+          {favouriteAuthor ? favouriteAuthor : "No books found"}
         </Text>
       </View>
     </SafeAreaView>
