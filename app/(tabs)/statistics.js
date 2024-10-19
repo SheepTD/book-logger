@@ -2,16 +2,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import { TextInput } from "react-native";
 import Size from "../../constants/Size";
 import ColorPalette from "../../constants/ColorPalette";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 export default function Statistics() {
   const [startDate, setStartDate] = useState(dayjs());
-  const [endDate, setEndDate] = useState(dayjs()); // set default end date to today
+  const [endDate, setEndDate] = useState(dayjs());
   const [loading, setLoading] = useState(false);
   const [dateRangePreset, setDateRangePreset] = useState("picker");
   const [booklist, setBooklist] = useState({
@@ -19,25 +19,14 @@ export default function Statistics() {
     changelog: [],
     latestBookId: 0,
   });
-  const [favouriteBook, setFavouriteBook] = useState("");
+  const [favouriteBook, setFavouriteBook] = useState(null);
 
-  // console log dates
-  useEffect(() => {
-    console.log("startDate:", startDate);
-    console.log("endDate:", endDate);
-  }, [startDate, endDate]);
-
-  // console log btn date range presets
-  useEffect(() => {
-    console.log("date range preset: ", dateRangePreset);
-  }, [dateRangePreset]);
-
-  // fetch booklist on initial load
   useEffect(() => {
     const fetchInitialData = async () => {
+      console.log("Fetching initial data...");
       try {
         const fetchedBooklist = await AsyncStorage.getItem("booklist");
-        console.log("Fetched booklist:", fetchedBooklist); // remove this
+        console.log("Fetched booklist:", fetchedBooklist);
         if (fetchedBooklist === null) {
           const defaultBooklist = {
             books: [],
@@ -46,25 +35,52 @@ export default function Statistics() {
           };
           const stringDefaultBooklist = JSON.stringify(defaultBooklist);
           await AsyncStorage.setItem("booklist", stringDefaultBooklist);
-          console.log("Saved booklist:", stringDefaultBooklist);
-          // don't need to update the booklist useState because it is already set to the default
+          console.log("Saved default booklist");
         } else {
           const parsedBooklist = JSON.parse(fetchedBooklist);
           setBooklist(parsedBooklist);
+          console.log("Set booklist:", parsedBooklist);
         }
       } catch (e) {
-        console.log("Error fetching booklist data", e); // change this
+        console.log("Error fetching booklist data", e);
       }
+      setLoading(false);
     };
     fetchInitialData();
   }, []);
 
-  // update statistics whenever start and end dates change
   useEffect(() => {
+    console.log("Updating statistics based on date range...");
+    // set all to null if no books
+    if (!booklist.books || booklist.books.length === 0) {
+      setFavouriteBook(null);
+      console.log("No books found");
+      return;
+    }
+
+    const getBooksInDateRange = () => {
+      if (!booklist.books || booklist.books.length === 0) {
+        return [];
+      }
+
+      const filteredBooks = booklist.books.filter((book) => {
+        const bookFinishDate = dayjs(book.finishDate);
+        const isAfterStartDate =
+          bookFinishDate.isAfter(startDate) || bookFinishDate.isSame(startDate);
+        const isBeforeEndDate =
+          bookFinishDate.isBefore(endDate) || bookFinishDate.isSame(endDate);
+        return isAfterStartDate && isBeforeEndDate;
+      });
+
+      return filteredBooks;
+    };
+    const booksInDateRange = getBooksInDateRange();
+    console.log("Books in date range:", booksInDateRange);
+
+    // get highest rated book in date range
     let highestRatedBook = null;
     let highestRating = -1;
-
-    booklist.books.forEach((book) => {
+    booksInDateRange.forEach((book) => {
       if (book.rating > highestRating) {
         highestRating = book.rating;
         highestRatedBook = book;
@@ -77,9 +93,9 @@ export default function Statistics() {
       }
     });
     setFavouriteBook(highestRatedBook);
+    console.log("Favourite book set:", highestRatedBook);
   }, [startDate, endDate, booklist]);
 
-  // styles
   const size = Size();
   const styles = StyleSheet.create({
     container: {
@@ -120,6 +136,7 @@ export default function Statistics() {
   });
 
   const findEarliestDate = () => {
+    console.log("Finding earliest date...");
     let earliestDate = null;
     booklist.books.forEach((currentBook) => {
       const currentStartDate = currentBook.startDate;
@@ -132,14 +149,14 @@ export default function Statistics() {
         earliestDate = currentFinishDate;
       }
     });
+    console.log("Earliest date found:", earliestDate);
     return earliestDate;
   };
 
   const onAllTime = () => {
-    console.log("all time pressed");
+    console.log("Setting date range to all time...");
     setDateRangePreset("all time");
-    // set earliest date as start date and today as end date
-    setStartDate(findEarliestDate);
+    setStartDate(findEarliestDate());
     setEndDate(dayjs());
   };
 
@@ -148,7 +165,10 @@ export default function Statistics() {
       <Header style={{ justifyContent: "space-around" }}>
         <Pressable
           disabled={loading}
-          onPress={() => setDateRangePreset("picker")}
+          onPress={() => {
+            console.log("Picker date range selected");
+            setDateRangePreset("picker");
+          }}
           style={
             dateRangePreset === "picker"
               ? [
@@ -181,6 +201,7 @@ export default function Statistics() {
           startDate={startDate}
           endDate={endDate}
           onChange={(params) => {
+            console.log("Date range changed", params);
             setStartDate(params.startDate);
             setEndDate(params.endDate);
           }}
