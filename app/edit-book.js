@@ -198,7 +198,7 @@ export default function EditBook() {
         rating: rating,
         review: review,
         section: section,
-        id: updatedBooklist.latestBookId,
+        id: selectedBookId,
       });
     } else {
       updatedBooklist.latestBookId += 1;
