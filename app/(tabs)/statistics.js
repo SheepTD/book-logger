@@ -1,7 +1,9 @@
+// TODO: Make sure that statistics don't include books in the 'bin' section
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Header from "../../components/Header";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Size from "../../constants/Size";
 import ColorPalette from "../../constants/ColorPalette";
 import DateTimePicker from "react-native-ui-datepicker";
@@ -84,10 +86,11 @@ export default function Statistics() {
     let highestRatedBook = null;
     let highestRating = -1;
     booksInDateRange.forEach((book) => {
-      if (book.rating > highestRating) {
-        highestRating = book.rating;
+      const floatRating = parseFloat(book.rating);
+      if (floatRating > highestRating) {
+        highestRating = floatRating;
         highestRatedBook = book;
-      } else if (book.rating === highestRating) {
+      } else if (floatRating === highestRating) {
         const currentBookFinishDate = dayjs(book.finishDate);
         const highestBookFinishDate = dayjs(highestRatedBook.finishDate);
         if (currentBookFinishDate.isAfter(highestBookFinishDate)) {
