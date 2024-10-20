@@ -1,6 +1,6 @@
 // TODO:
 // Add functions to handle if booklist or selected book id are null i.e. they have not been saved to Async Storage yet
-// Genre related functionality: retrive genres from save, add and save new genre
+// Genre related functionality: retrieve genres from save, add and save new genre
 // Add validitiy checks and warning to all inputs
 // Update layout to match the design
 
@@ -8,12 +8,13 @@ import { Text, StyleSheet, View, TextInput, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ColorPalette from "../constants/ColorPalette";
 import Size from "../constants/Size";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PrimaryBtn from "../components/PrimaryBtn";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import Header from "../components/Header";
 import dayjs from "dayjs";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function EditBook() {
   // AsyncStorage state
@@ -36,56 +37,58 @@ export default function EditBook() {
   const [loading, setLoading] = useState(false);
 
   // fetch data on initial load
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      let parsedBooklist; // declared outside of the "try/accept" to be used "if" statement
-      try {
-        const stringBooklist = await AsyncStorage.getItem("booklist");
-        console.log("Fetched booklist:", stringBooklist); // remove this
-        parsedBooklist = JSON.parse(stringBooklist);
-        setBooklist(parsedBooklist);
-      } catch (e) {
-        console.log("Error fetching booklist data:", e); // change this
-      }
-      let parsedSelectedBookId; // declared outside of the "try/accept" to be used "if" statement
-      try {
-        const stringSelectedBookId = await AsyncStorage.getItem(
-          "selected-book-id"
-        );
-        console.log("Fetched selected book id:", stringSelectedBookId);
-        parsedSelectedBookId = JSON.parse(stringSelectedBookId);
-        setSelectedBookId(parsedSelectedBookId);
-      } catch (e) {
-        console.log("Error fetching selected book id:", e);
-      }
-      // update inputs if selected book id is not 0
-      if (parsedSelectedBookId !== 0 && parsedSelectedBookId !== null) {
-        console.log("Selected Book Id is not set to 0 or null");
-        // Filter out the selected book
-        const selectedBook = parsedBooklist.books.find(
-          (item) => item.id === parsedSelectedBookId
-        );
-        if (!selectedBook) {
-          console.log("Book not found");
-          setLoading(false);
-          return;
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        setLoading(true);
+        let parsedBooklist; // declared outside of the "try/accept" to be used "if" statement
+        try {
+          const stringBooklist = await AsyncStorage.getItem("booklist");
+          console.log("Fetched booklist:", stringBooklist); // remove this
+          parsedBooklist = JSON.parse(stringBooklist);
+          setBooklist(parsedBooklist);
+        } catch (e) {
+          console.log("Error fetching booklist data:", e); // change this
         }
-        setTitle(selectedBook.title);
-        setAuthor(selectedBook.author);
-        setStartDate(dayjs(selectedBook.startDate).format("DD/MM/YYYY"));
-        setFinishDate(dayjs(selectedBook.finishDate).format("DD/MM/YYYY"));
-        setGenre(selectedBook.genre);
-        setRating(selectedBook.rating);
-        setReview(selectedBook.review);
-        setSection(selectedBook.section);
-      } else {
-        console.log("Selected book id is set to 0  or null");
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+        let parsedSelectedBookId; // declared outside of the "try/accept" to be used "if" statement
+        try {
+          const stringSelectedBookId = await AsyncStorage.getItem(
+            "selected-book-id"
+          );
+          console.log("Fetched selected book id:", stringSelectedBookId);
+          parsedSelectedBookId = JSON.parse(stringSelectedBookId);
+          setSelectedBookId(parsedSelectedBookId);
+        } catch (e) {
+          console.log("Error fetching selected book id:", e);
+        }
+        // update inputs if selected book id is not 0
+        if (parsedSelectedBookId !== 0 && parsedSelectedBookId !== null) {
+          console.log("Selected Book Id is not set to 0 or null");
+          // Filter out the selected book
+          const selectedBook = parsedBooklist.books.find(
+            (item) => item.id === parsedSelectedBookId
+          );
+          if (!selectedBook) {
+            console.log("Book not found");
+            setLoading(false);
+            return;
+          }
+          setTitle(selectedBook.title);
+          setAuthor(selectedBook.author);
+          setStartDate(dayjs(selectedBook.startDate).format("DD/MM/YYYY"));
+          setFinishDate(dayjs(selectedBook.finishDate).format("DD/MM/YYYY"));
+          setGenre(selectedBook.genre);
+          setRating(selectedBook.rating);
+          setReview(selectedBook.review);
+          setSection(selectedBook.section);
+        } else {
+          console.log("Selected book id is set to 0  or null");
+        }
+        setLoading(false);
+      };
+      fetchData();
+    }, [])
+  );
 
   // styles
   const size = Size();

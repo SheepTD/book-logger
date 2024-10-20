@@ -1,5 +1,3 @@
-// TODO: Make sure that statistics don't include books in the 'bin' section
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Header from "../../components/Header";
@@ -9,6 +7,7 @@ import ColorPalette from "../../constants/ColorPalette";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Statistics() {
   const [startDate, setStartDate] = useState(dayjs());
@@ -24,33 +23,35 @@ export default function Statistics() {
   const [favouriteAuthor, setFavouriteAuthor] = useState(null);
   const [favouriteGenre, setFavouriteGenre] = useState(null);
 
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      console.log("Fetching initial data...");
-      try {
-        const fetchedBooklist = await AsyncStorage.getItem("booklist");
-        console.log("Fetched booklist:", fetchedBooklist);
-        if (fetchedBooklist === null) {
-          const defaultBooklist = {
-            books: [],
-            changelog: [],
-            latestBookId: 0,
-          };
-          const stringDefaultBooklist = JSON.stringify(defaultBooklist);
-          await AsyncStorage.setItem("booklist", stringDefaultBooklist);
-          console.log("Saved default booklist");
-        } else {
-          const parsedBooklist = JSON.parse(fetchedBooklist);
-          setBooklist(parsedBooklist);
-          console.log("Set booklist:", parsedBooklist);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchInitialData = async () => {
+        console.log("Fetching initial data...");
+        try {
+          const fetchedBooklist = await AsyncStorage.getItem("booklist");
+          console.log("Fetched booklist:", fetchedBooklist);
+          if (fetchedBooklist === null) {
+            const defaultBooklist = {
+              books: [],
+              changelog: [],
+              latestBookId: 0,
+            };
+            const stringDefaultBooklist = JSON.stringify(defaultBooklist);
+            await AsyncStorage.setItem("booklist", stringDefaultBooklist);
+            console.log("Saved default booklist");
+          } else {
+            const parsedBooklist = JSON.parse(fetchedBooklist);
+            setBooklist(parsedBooklist);
+            console.log("Set booklist:", parsedBooklist);
+          }
+        } catch (e) {
+          console.log("Error fetching booklist data", e);
         }
-      } catch (e) {
-        console.log("Error fetching booklist data", e);
-      }
-      setLoading(false);
-    };
-    fetchInitialData();
-  }, []);
+        setLoading(false);
+      };
+      fetchInitialData();
+    }, [])
+  );
 
   useEffect(() => {
     console.log("Updating statistics based on date range...");
@@ -74,7 +75,7 @@ export default function Statistics() {
           bookFinishDate.isAfter(startDate) || bookFinishDate.isSame(startDate);
         const isBeforeEndDate =
           bookFinishDate.isBefore(endDate) || bookFinishDate.isSame(endDate);
-        return isAfterStartDate && isBeforeEndDate;
+        return isAfterStartDate && isBeforeEndDate && book.section !== "Bin";
       });
 
       return filteredBooks;

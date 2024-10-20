@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import ColorPalette from "../../constants/ColorPalette";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PrimaryBtn from "../../components/PrimaryBtn";
@@ -9,6 +9,7 @@ import Size from "../../constants/Size";
 import { Text } from "react-native";
 import Header from "../../components/Header";
 import dayjs from "dayjs";
+import { useFocusEffect } from "@react-navigation/native";
 
 // const deleteEverything = async () => {
 //   let keys = [];
@@ -42,31 +43,33 @@ export default function Booklist() {
   const [loading, setLoading] = useState(false);
 
   // fetch booklist on initial load
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const fetchedBooklist = await AsyncStorage.getItem("booklist");
-        console.log("Fetched booklist:", fetchedBooklist); // remove this
-        if (fetchedBooklist === null) {
-          const defaultBooklist = {
-            books: [],
-            changelog: [],
-            latestBookId: 0,
-          };
-          const stringDefaultBooklist = JSON.stringify(defaultBooklist);
-          await AsyncStorage.setItem("booklist", stringDefaultBooklist);
-          console.log("Saved booklist:", stringDefaultBooklist);
-          // don't need to update the booklist useState because it is already set to the default
-        } else {
-          const parsedBooklist = JSON.parse(fetchedBooklist);
-          setBooklist(parsedBooklist);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchInitialData = async () => {
+        try {
+          const fetchedBooklist = await AsyncStorage.getItem("booklist");
+          console.log("Fetched booklist:", fetchedBooklist); // remove this
+          if (fetchedBooklist === null) {
+            const defaultBooklist = {
+              books: [],
+              changelog: [],
+              latestBookId: 0,
+            };
+            const stringDefaultBooklist = JSON.stringify(defaultBooklist);
+            await AsyncStorage.setItem("booklist", stringDefaultBooklist);
+            console.log("Saved booklist:", stringDefaultBooklist);
+            // don't need to update the booklist useState because it is already set to the default
+          } else {
+            const parsedBooklist = JSON.parse(fetchedBooklist);
+            setBooklist(parsedBooklist);
+          }
+        } catch (e) {
+          console.log("Error fetching booklist data", e); // change this
         }
-      } catch (e) {
-        console.log("Error fetching booklist data", e); // change this
-      }
-    };
-    fetchInitialData();
-  }, []);
+      };
+      fetchInitialData();
+    }, [])
+  );
 
   // log booklist on update - remove this
   useEffect(() => {
