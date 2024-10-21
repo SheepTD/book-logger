@@ -1,3 +1,5 @@
+// TODO: add friends added stat once friends page is setup
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Header from "../../components/Header";
@@ -22,6 +24,10 @@ export default function Statistics() {
   const [favouriteBook, setFavouriteBook] = useState(null);
   const [favouriteAuthor, setFavouriteAuthor] = useState(null);
   const [favouriteGenre, setFavouriteGenre] = useState(null);
+  const [booksRead, setBooksRead] = useState(0);
+  // const [friendsAdded, setFriendsAdded] = useState(0);
+  const [mostReadInYear, setMostReadInYear] = useState(0);
+  const [mostReadInMonth, setMostReadInMonth] = useState(0);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -60,6 +66,9 @@ export default function Statistics() {
       setFavouriteBook(null);
       setFavouriteAuthor(null);
       setFavouriteGenre(null);
+      setBooksRead(0);
+      setMostReadInYear(0);
+      setMostReadInMonth(0);
       console.log("No books found");
       return;
     }
@@ -82,6 +91,10 @@ export default function Statistics() {
     };
     const booksInDateRange = getBooksInDateRange();
     console.log("Books in date range:", booksInDateRange);
+
+    // get total number of books read in date range
+    setBooksRead(booksInDateRange.length);
+    console.log("Books read:", booksRead);
 
     // get highest rated book in date range
     let highestRatedBook = null;
@@ -144,6 +157,51 @@ export default function Statistics() {
     console.log("Highest ranked author set:", getHighestRankedAuthor());
 
     // get highest ranked genre on average in date range
+    const getHighestRankedGenre = () => {
+      let highestRankedGenre = null;
+      let highestAverageRating = -1;
+      let highestFinishDate = null;
+      const genreRatings = {};
+      booksInDateRange.forEach((book) => {
+        const genre = book.genre;
+        if (!genreRatings[genre]) {
+          genreRatings[genre] = { count: 0, sum: 0 };
+        }
+        genreRatings[genre].sum += parseFloat(book.rating);
+        genreRatings[genre].count += 1;
+      });
+      console.log("Genre ratings:", genreRatings);
+      Object.keys(genreRatings).forEach((genre) => {
+        const averageRating =
+          genreRatings[genre].sum / genreRatings[genre].count;
+        console.log(`${genre} average rating: ${averageRating}`);
+        if (averageRating > highestAverageRating) {
+          highestAverageRating = averageRating;
+          highestRankedGenre = genre;
+          highestFinishDate = null;
+        } else if (averageRating === highestAverageRating) {
+          const finishDate = dayjs(
+            booksInDateRange.filter((book) => book.genre === genre)[0]
+              .finishDate
+          );
+          if (!highestFinishDate || finishDate.isAfter(highestFinishDate)) {
+            highestFinishDate = finishDate;
+            highestRankedGenre = genre;
+          }
+        }
+      });
+      console.log("Highest ranked genre:", highestRankedGenre);
+      return highestRankedGenre;
+    };
+
+    setFavouriteGenre(getHighestRankedGenre());
+    console.log("Highest ranked genre set:", getHighestRankedGenre());
+
+    // get total number of friends added in date range (coming soon...)
+
+    // get most read in year
+
+    // get most read in month
   }, [startDate, endDate, booklist]);
 
   const size = Size();
@@ -178,6 +236,7 @@ export default function Statistics() {
       maxHeight: size.standardHeight,
       width: size.standardWidth,
       marginLeft: size.marginLeft,
+      marginBottom: size.marginClose,
     },
     statText: {
       fontSize: size.header,
@@ -268,6 +327,12 @@ export default function Statistics() {
         <Text style={styles.text}>Highest Rated Author (on average):</Text>
         <Text style={styles.statText}>
           {favouriteAuthor ? favouriteAuthor : "No books found"}
+        </Text>
+      </View>
+      <View style={styles.statContainer}>
+        <Text style={styles.text}>Highest Rated Genre (on average):</Text>
+        <Text style={styles.statText}>
+          {favouriteGenre ? favouriteGenre : "No books found"}
         </Text>
       </View>
     </SafeAreaView>
