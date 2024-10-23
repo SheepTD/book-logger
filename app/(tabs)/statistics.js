@@ -27,7 +27,13 @@ export default function Statistics() {
   const [booksRead, setBooksRead] = useState(0);
   // const [friendsAdded, setFriendsAdded] = useState(0);
   const [mostReadInYear, setMostReadInYear] = useState(0);
+  const [mostReadInYearDate, setMostReadInYearDate] = useState(null);
+
   const [mostReadInMonth, setMostReadInMonth] = useState(0);
+  const [mostReadInMonthDate, setMostReadInMonthDate] = useState(null);
+
+  const [daysSinceBookStartedFinished, setDaysSinceBookStartedFinished] =
+    useState(0);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -69,10 +75,75 @@ export default function Statistics() {
       setBooksRead(0);
       setMostReadInYear(0);
       setMostReadInMonth(0);
+      setDaysSinceBookStartedFinished(0);
       console.log("No books found");
       return;
     }
 
+    // get books finished
+    const getBooksFinished = () => {
+      if (!booklist.books || booklist.books.length === 0) {
+        return [];
+      }
+
+      const booksFinished = booklist.books.filter(
+        (book) => book.finishDate && book.section !== "Bin"
+      );
+
+      return booksFinished;
+    };
+    const booksFinished = getBooksFinished();
+    console.log("Books finished:", booksFinished);
+
+    // get most read in year
+
+    // get most read in month
+    const getMostReadInMonth = () => {
+      let mostReadInMonth = 0;
+      let mostReadInMonthDate = null;
+      if (booksFinished.length === 0) {
+        console.log("No books finished");
+        return [mostReadInMonth, mostReadInMonthDate];
+      }
+      const months = {};
+      booksFinished.forEach((book) => {
+        const finishDate = dayjs(book.finishDate);
+        const month = finishDate.month();
+        if (!months[month]) {
+          months[month] = 0;
+        }
+        months[month]++;
+      });
+      console.log("Months:", months);
+      Object.keys(months).forEach((month) => {
+        console.log(`Checking month ${month}`);
+        if (months[month] > mostReadInMonth) {
+          console.log(`Updating most read in month to ${months[month]}`);
+          mostReadInMonth = months[month];
+          mostReadInMonthDate = dayjs().month(parseInt(month)).startOf("month");
+        } else if (months[month] === mostReadInMonth) {
+          console.log("Month is equal to the current most read in month");
+          const currentMonth = dayjs().month(parseInt(month));
+          if (currentMonth.isAfter(mostReadInMonthDate)) {
+            console.log("Updating most read in month date");
+            mostReadInMonthDate = currentMonth;
+          }
+        }
+      });
+      console.log(
+        "Most read in month:",
+        mostReadInMonth,
+        mostReadInMonthDate ? mostReadInMonthDate.format("MMMM YYYY") : ""
+      );
+      setMostReadInMonth(mostReadInMonth);
+      setMostReadInMonthDate(
+        mostReadInMonthDate ? mostReadInMonthDate.format("MMMM YYYY") : ""
+      );
+    };
+
+    getMostReadInMonth();
+
+    // get days since book started or finished
     const getBooksInDateRange = () => {
       if (!booklist.books || booklist.books.length === 0) {
         return [];
@@ -198,10 +269,6 @@ export default function Statistics() {
     console.log("Highest ranked genre set:", getHighestRankedGenre());
 
     // get total number of friends added in date range (coming soon...)
-
-    // get most read in year
-
-    // get most read in month
   }, [startDate, endDate, booklist]);
 
   const size = Size();
@@ -333,6 +400,21 @@ export default function Statistics() {
         <Text style={styles.text}>Highest Rated Genre (on average):</Text>
         <Text style={styles.statText}>
           {favouriteGenre ? favouriteGenre : "No books found"}
+        </Text>
+      </View>
+      <View style={styles.statContainer}>
+        <Text style={styles.text}>Books Read:</Text>
+        <Text style={styles.statText}>
+          {booksRead ? booksRead : "No books found"}
+        </Text>
+      </View>
+      <View style={styles.statContainer}>
+        <Text style={styles.text}>
+          Most books read in a month:{" "}
+          {mostReadInMonthDate ? mostReadInMonthDate : "No books found"}
+        </Text>
+        <Text style={styles.statText}>
+          {mostReadInMonth ? mostReadInMonth : "No books found"}
         </Text>
       </View>
     </SafeAreaView>
