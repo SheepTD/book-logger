@@ -96,6 +96,49 @@ export default function Statistics() {
     console.log("Books finished:", booksFinished);
 
     // get most read in year
+    const getMostReadInYear = () => {
+      let mostReadInYear = 0;
+      let mostReadInYearDate = null;
+      if (booksFinished.length === 0) {
+        console.log("No books finished");
+        return [mostReadInYear, mostReadInYearDate];
+      }
+      const years = {};
+      booksFinished.forEach((book) => {
+        const finishDate = dayjs(book.finishDate);
+        const year = finishDate.year();
+        if (!years[year]) {
+          years[year] = 0;
+        }
+        years[year]++;
+      });
+      console.log("Years:", years);
+      Object.keys(years).forEach((year) => {
+        console.log(`Checking year ${year}`);
+        if (years[year] > mostReadInYear) {
+          console.log(`Updating most read in year to ${years[year]}`);
+          mostReadInYear = years[year];
+          mostReadInYearDate = dayjs().year(parseInt(year)).startOf("year");
+        } else if (years[year] === mostReadInYear) {
+          console.log("Year is equal to the current most read in year");
+          const currentYear = dayjs().year(parseInt(year));
+          if (currentYear.isAfter(mostReadInYearDate)) {
+            console.log("Updating most read in year date");
+            mostReadInYearDate = currentYear;
+          }
+        }
+      });
+      console.log(
+        "Most read in year:",
+        mostReadInYear,
+        mostReadInYearDate ? mostReadInYearDate.format("YYYY") : ""
+      );
+      setMostReadInYear(mostReadInYear);
+      setMostReadInYearDate(
+        mostReadInYearDate ? mostReadInYearDate.format("YYYY") : ""
+      );
+    };
+    getMostReadInYear();
 
     // get most read in month
     const getMostReadInMonth = () => {
@@ -140,7 +183,6 @@ export default function Statistics() {
         mostReadInMonthDate ? mostReadInMonthDate.format("MMMM YYYY") : ""
       );
     };
-
     getMostReadInMonth();
 
     // get days since book started or finished
@@ -415,6 +457,15 @@ export default function Statistics() {
         </Text>
         <Text style={styles.statText}>
           {mostReadInMonth ? mostReadInMonth : "No books found"}
+        </Text>
+      </View>
+      <View style={styles.statContainer}>
+        <Text style={styles.text}>
+          Most books read in a year:{" "}
+          {mostReadInYearDate ? mostReadInYearDate : "No books found"}
+        </Text>
+        <Text style={styles.statText}>
+          {mostReadInYear ? mostReadInYear : "No books found"}
         </Text>
       </View>
     </SafeAreaView>
